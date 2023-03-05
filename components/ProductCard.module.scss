@@ -1,0 +1,32 @@
+@import '../breakpoints.scss';
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    @include md {
+        flex-direction: row;
+    }
+}
+
+.price {
+    display: inline-block;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+}
+
+.cardMedia{
+
+    @include md{
+        min-width:300px;
+        min-height:400px;
+    }
+
+    @include lg{
+        min-width:500px;
+        min-height:600px;
+    }
+}
+
