@@ -1,14 +1,16 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 
-const AddToCartButton = () => {
+interface Props {
+    onClick: () => void
+}
+
+const AddToCartButton = ({ onClick }: Props) => {
     return (
-        <Button variant="contained"
+        <Button variant="contained" onClick={onClick}
             sx={{
-                display: 'block', backgroundColor: 'black', '&:hover': {
-                    backgroundColor: 'peach',
-                },
-                my: '1em'
+                display: 'block', backgroundColor: 'black',
+                my: '1em',
             }}>
             Add To Cart
         </Button>
