@@ -14,14 +14,19 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import ShoppingCartTwoToneIcon from '@mui/icons-material/ShoppingCartTwoTone';
+import Badge from '@mui/material/Badge';
+
 
 const pages = [{ name: 'Home', href: '/' },
 { name: 'Products', href: '/products' },
 { name: 'Categories', href: '/categories' },
 ];
 
+interface Props {
+    itemsQuantity: number
+}
 
-const Navbar = () => {
+const Navbar = ({ itemsQuantity }: Props) => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -52,7 +57,6 @@ const Navbar = () => {
                         }}
                     >Skin Therapy
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -124,7 +128,14 @@ const Navbar = () => {
                         ))}
                     </Box>
                     <Box>
-                        <Link href="/cart" className={styles.link}><ShoppingCartTwoToneIcon /></Link>
+                        {itemsQuantity > 0 ? <Link href="/cart" className={styles.link}>
+                            <Badge badgeContent={itemsQuantity} color="secondary">
+                                <ShoppingCartTwoToneIcon />
+                            </Badge>
+                        </Link> : <Link href="/cart" className={styles.link}>
+                            <ShoppingCartTwoToneIcon />
+                        </Link>}
+
                     </Box>
                 </Toolbar>
             </Container>
