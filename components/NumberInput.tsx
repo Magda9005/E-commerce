@@ -8,7 +8,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 interface Props {
     availableQuantity: number;
     value: number;
-    onValueChange: (event) => void
+    onValueChange: (value:number) => void
 }
 
 const NumberInput = ({ availableQuantity, value, onValueChange }: Props) => {

@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea } from '@mui/material';
 import styles from './ListElement.module.scss';
 import Link from 'next/link';
 
@@ -19,7 +19,9 @@ const ListElement = ({ img, productName, price, description, handle }: Props) =>
     return (
         <Card className={styles.productCard} sx={{ maxWidth: 345 }}>
             <Link href={`${handle}`} className={styles.link}>
-                <CardActionArea>
+                <CardActionArea sx={{
+                    paddingBottom: '1em'
+                }}>
                     <CardMedia
                         component="img"
                         height="350"
@@ -32,13 +34,11 @@ const ListElement = ({ img, productName, price, description, handle }: Props) =>
                         </Typography>
                         <span className={styles.price}>{new Intl.NumberFormat('eur', { style: 'currency', currency: 'eur' }).format(price)
                         } </span>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" className={styles.description}>
                             {description}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                </CardActions>
             </Link >
 
         </Card>

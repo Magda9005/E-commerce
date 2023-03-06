@@ -17,7 +17,9 @@ interface Props {
     variants: string[];
     handleRadioChange: (val: string) => void;
     availableQuantity: number;
-    onClick: () => void
+    onClick: () => void;
+    value:number;
+    onValueChange:(value:number)=>void
 }
 
 const ProductCard = ({ img, productName, description, price, defaultVariantValue, variants, handleRadioChange, availableQuantity, onClick, value, onValueChange }: Props) => {

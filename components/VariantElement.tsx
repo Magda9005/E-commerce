@@ -9,7 +9,7 @@ import Done from '@mui/icons-material/Done';
 interface Props {
     defaultValue: string;
     variants: string[];
-    onChange: () => void
+    onChange: (value: string) => void
 }
 
 const VariantElement = ({ defaultValue, variants, onChange }: Props) => {

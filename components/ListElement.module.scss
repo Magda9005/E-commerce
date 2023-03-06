@@ -23,12 +23,18 @@
 
 .cardContent {
     height: 220px;
-    white-space: wrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .link {
     text-decoration: none;
     color: inherit;
+}
+
+.description {
+    max-height: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
 }
