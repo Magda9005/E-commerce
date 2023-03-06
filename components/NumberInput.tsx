@@ -6,32 +6,32 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 
 interface Props {
-    quantityAccessible: number
+    availableQuantity: number;
+    value: number;
+    onValueChange: (event) => void
 }
 
-const NumberInput = ({ quantityAccessible }: Props) => {
-    const [value, setValue] = React.useState(1);
-
+const NumberInput = ({ availableQuantity, value, onValueChange }: Props) => {
     const handleIncrement = () => {
-        setValue((prevValue) => prevValue + 1);
+        onValueChange(value + 1);
     };
 
     const handleDecrement = () => {
-        setValue((prevValue) => prevValue - 1);
+        onValueChange(value - 1);
     };
 
     return (
         <TextField
             type="number"
             value={value}
-            onChange={(event) => setValue(parseInt(event.target.value))}
+            onChange={(event) => onValueChange(parseInt(event.target.value))}
             InputProps={{
                 inputProps: {
-                    min: 1,
-                    max: { quantityAccessible },
+                    min: availableQuantity === 0 ? 0 : 1,
+                    max: { availableQuantity },
                     step: 1,
                     inputMode: 'numeric',
-                    style: { textAlign: "center", width: '2em' }
+                    style: { textAlign: "center", width: '2em', height: '0.7em' }
                 },
                 startAdornment: (
                     <InputAdornment position="start">
@@ -51,7 +51,7 @@ const NumberInput = ({ quantityAccessible }: Props) => {
                             aria-label="Increment value"
                             onClick={handleIncrement}
                             edge="end"
-                            disabled={value >= quantityAccessible}
+                            disabled={value >= availableQuantity}
                         >
                             <AddIcon />
                         </IconButton>
