@@ -32,8 +32,6 @@ const CategoryElement = ({ img, categoryName }: Props) => {
                     </Typography>
                 </CardContent>
             </CardActionArea>
-            <CardActions>
-            </CardActions>
         </Card>
     )
 }
