@@ -1,8 +1,4 @@
-import Navbar from "../../components/Navbar";
-import ProductCard from "../../components/ProductCard";
-import styles from './name.module.scss';
-import { useState,useContext } from "react";
-// import { CartContext } from "../cart";
+import SingleProductPage from "../../components/SingleProductPage";
 
 export const getStaticPaths = async () => {
   const url = process.env.NEXT_PUBLIC_API
@@ -66,53 +62,8 @@ export const getStaticPaths = async () => {
     fallback: false
   }
 }
-const ProductPage = ({ data }) => {
-  const product = data.data.product;
-  const quantityOfFirstVariant = product.variants.edges[0].node.quantityAvailable;
-  const [selectedVariantId, setSelectedVariantId] = useState(product.variants.edges[0].node.id);
-  const [price, setPrice] = useState(product.variants.edges[0].node.price.amount);
-  const [availableQuantity, setAvailableQuantity] = useState(quantityOfFirstVariant);
-  const [quantity, setQuantity] = useState(1)
-// const itemsQuantity=useContext(CartContext)
-  const variants = product.variants.edges.map(variant => {
-    return variant.node.selectedOptions[0].value
-  })
+const ProductPage = ({ data }) => (<SingleProductPage data={data}/>)
 
-
-  const handleAddProductToCart = () => {
-    console.log(selectedVariantId, quantity)
-
-  }
-
-  return (
-    <>
-      <Navbar itemsQuantity={10}/>
-      <div className={styles.container}>
-        <ProductCard img={product.images.edges[0].node.url}
-          productName={product.title}
-          description={product.description}
-          price={price}
-          defaultVariantValue={variants[0]}
-          variants={variants}
-          availableQuantity={availableQuantity}
-          value={quantity}
-          onValueChange={(val) => setQuantity(val)}
-          onClick={handleAddProductToCart}
-          handleRadioChange={(value) => {
-            const variants = product.variants.edges;
-            for (let variant of variants) {
-              if (variant.node.selectedOptions[0].value == value) {
-                setPrice(variant.node.price.amount);
-                setAvailableQuantity(variant.node.quantityAvailable);
-                setSelectedVariantId(variant.node.id)
-              }
-            }
-          }}
-        />
-      </div>
-    </>
-  )
-}
 export async function getStaticProps(context) {
   const productName = context.params.name;
 
