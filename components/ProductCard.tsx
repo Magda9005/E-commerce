@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import styles from './ProductCard.module.scss';
-import VariantElement from './VariantElement';
+import SizeSelectElement from './SizeSelectElement';
 import NumberInput from './NumberInput';
 import AddToCartButton from './AddToCartButton';
 
@@ -13,16 +13,15 @@ interface Props {
     productName: string;
     description: string;
     price: string;
-    defaultVariantValue: string;
     variants: string[];
-    handleRadioChange: (val: string) => void;
+    handleSelectChange: (val: string) => void;
     availableQuantity: number;
     onClick: () => void;
     value:number;
     onValueChange:(value:number)=>void
 }
 
-const ProductCard = ({ img, productName, description, price, defaultVariantValue, variants, handleRadioChange, availableQuantity, onClick, value, onValueChange }: Props) => {
+const ProductCard = ({ img, productName, description, price, variants, handleSelectChange, availableQuantity, onClick, value, onValueChange,size }: Props) => {
 
     return (
         <Card sx={{ display: 'flex' }} className={styles.container}>
@@ -39,7 +38,7 @@ const ProductCard = ({ img, productName, description, price, defaultVariantValue
                 </Typography>
                 <span className={styles.price}>{new Intl.NumberFormat('eur', { style: 'currency', currency: 'eur' }).format(price)
                 } </span>
-                <VariantElement defaultValue={defaultVariantValue} variants={variants} onChange={handleRadioChange} />
+                <SizeSelectElement  variants={variants} onChange={handleSelectChange} size={size} />
                 <NumberInput availableQuantity={availableQuantity} value={value}
                     onValueChange={onValueChange} />
                 <AddToCartButton onClick={onClick} />
