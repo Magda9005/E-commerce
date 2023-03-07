@@ -2,8 +2,6 @@ import Navbar from "../../components/Navbar";
 import CategoryElement from "../../components/CategoryElement";
 import styles from './index.module.scss';
 import Link from "next/link";
-// import { CartContext } from "../cart";
-// import { useContext } from "react";
 
 const Categories = () => {
 
@@ -12,7 +10,6 @@ const Categories = () => {
         { name: 'Skin', img: './skinCosmetics.avif', route: 'categories/skin-care' },
         { name: 'Makeup', img: './makeup.avif', route: 'categories/makeup' }
     ]
-    // const itemsQuantity=useContext(CartContext)
 
     return (
         <>
