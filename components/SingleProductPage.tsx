@@ -92,7 +92,7 @@ const addProductToCartMutation = `mutation AddProductToCart($cartId:ID!, $select
 const SingleProductPage = ({ productData }) => {
     const product = productData.data.product;
     const quantityOfFirstVariant = product.variants.edges[0].node.quantityAvailable;
-    const [selectedVariantId, setSelectedVariantId] = useState(null);
+    const [selectedVariantId, setSelectedVariantId] = useState(product.variants.edges[0].node.id); 
     const [price, setPrice] = useState(product.variants.edges[0].node.price.amount);
     const [availableQuantity, setAvailableQuantity] = useState(quantityOfFirstVariant);
     const [selectedQuantity, setSelectedQuantity] = useState(1)
@@ -100,11 +100,13 @@ const SingleProductPage = ({ productData }) => {
         return variant.node.selectedOptions[0].value
     })
 
+
     const cartContext = useContext(MyContext);
     const [createCartResult, createCart] = useMutation(createCartMutation);
     const [addProductResult, addProduct] = useMutation(addProductToCartMutation)
     // const { data, fetching, error } = createCartResult;
 
+    const [size,setSize]=useState(variants[0])
 
 
     const handleAddProductToCart = () => {
@@ -119,7 +121,6 @@ const SingleProductPage = ({ productData }) => {
         }
         //jeżeli koszyk istnieje w cookies to dodajemy tylko produkt
         addProduct({ cartId, selectedQuantity, selectedVariantId })
-
     }
 
 
@@ -134,14 +135,16 @@ const SingleProductPage = ({ productData }) => {
                     variants={variants}
                     availableQuantity={availableQuantity}
                     value={selectedQuantity}
-                    onValueChange={(val) => setSelectedQuantity(val)}
+                    onValueChange={(val) => {
+                        setSelectedQuantity(val);
+                    }}
                     onClick={handleAddProductToCart}
-                    // size={size}
+                    variant={size}
                     handleSelectChange={(value) => {
                         const variants = product.variants.edges;
                         for (let variant of variants) {
                             if (variant.node.selectedOptions[0].value == value) {
-                                //   setSize(value)
+                                setSize(value);
                                 setPrice(variant.node.price.amount);
                                 setAvailableQuantity(variant.node.quantityAvailable);
                                 setSelectedVariantId(variant.node.id)
