@@ -18,10 +18,11 @@ interface Props {
     availableQuantity: number;
     onClick: () => void;
     value:number;
-    onValueChange:(value:number)=>void
+    onValueChange:(value:number)=>void;
+    variant:string;
 }
 
-const ProductCard = ({ img, productName, description, price, variants, handleSelectChange, availableQuantity, onClick, value, onValueChange,size }: Props) => {
+const ProductCard = ({ img, productName, description, price, variants, handleSelectChange, availableQuantity, onClick, value, onValueChange,variant }: Props) => {
 
     return (
         <Card sx={{ display: 'flex' }} className={styles.container}>
@@ -38,7 +39,9 @@ const ProductCard = ({ img, productName, description, price, variants, handleSel
                 </Typography>
                 <span className={styles.price}>{new Intl.NumberFormat('eur', { style: 'currency', currency: 'eur' }).format(price)
                 } </span>
-                <SizeSelectElement  variants={variants} onChange={handleSelectChange} size={size} />
+                <SizeSelectElement  variants={variants} onChange={handleSelectChange} 
+                variant={variant} 
+                />
                 <NumberInput availableQuantity={availableQuantity} value={value}
                     onValueChange={onValueChange} />
                 <AddToCartButton onClick={onClick} />
