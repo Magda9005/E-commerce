@@ -1,73 +1,92 @@
-// export const CartContext = createContext();
 import { useQuery } from 'urql';
-import cookie from 'js-cookie';
-import { useEffect,useMemo } from 'react';
-// add to cart- na klika: sprawdzamy czy jest utworzony koszyk w cookiesach:
-//-- jak nie to tworzymy i dojdajemy tam produkt z tą linią 
-// jesli jest to dodajemy do tego konkretnego koszyka produkt 
+import Cookies from 'js-cookie';
+import { useMemo, createContext } from 'react';
+import { idText } from 'typescript';
+// import { formatPrice } from '../helperFunctions/helperFunctions';
 
-const CartContext = ({ children }) => {
-    // const cartId = "gid://shopify/Cart/c1-2552942f064aef08d33884023f23705e";
-
-    useEffect(() => {
-        cookie.set('cartId', "gid://shopify/Cart/c1-2552942f064aef08d33884023f23705e");
-    }, [])
-
-    const cartId=useMemo(()=>{
-        if(cookie.get('cartId')!==undefined) {
-            return cookie.get('cartId')
-        }else {
-            return undefined
-        }
-    },[])
-
-        //sprawdzamy czy w ogóle jest jakiś koszyk
-
-    if(cartId){
-        const getCart = `query GetCart($cartId:ID!){
-            cart(id: $cartId) {
-            id
-                totalQuantity
-            createdAt
-            updatedAt
-            lines(first: 10) {
-              edges {
-                node {
-                  id
-                  merchandise {
-                      ... on ProductVariant {
-                        id
-                                        product {
-                                            title
-                                        }
-                      }
-                    }
-                  quantity
-                }
-              }
-            }
+const getCart = `query GetCart($cartId:ID!){
+  cart(id: $cartId) {
+  id
+cost{
+totalAmount {
+amount
+currencyCode
+}
+}
+      totalQuantity
+  createdAt
+  updatedAt
+  lines(first: 10) {
+    edges {
+      node {
+        id
+        cost{
+          totalAmount{
+            amount
+            currencyCode
           }
         }
-        `
-        const [result, reexecuteQuery] = useQuery(
-            {
-                query: getCart,
-                variables: { cartId }
-            },
-        )
-
-        const { data, fetching, error } = result;
-
-        console.log(data.cart.totalQuantity)
-
-
-
+        merchandise {
+            ... on ProductVariant {
+              id
+              quantityAvailable
+                              product {
+                                  title
+                                  images(first:1){
+                                    edges {
+                                      node{
+                                        url
+                                      }
+                                    }
+                                  }
+                              }
+                              title
+                              price {
+                                amount
+                              }
+            }
+          }
+        quantity
+      }
     }
+  }
+}
+}
+        `
 
-    return (
-        <>
-        </>
-    )
+export const MyContext = createContext();
+
+//CartContext to jest komponent który eknapsuluje całą logikę koszyka
+const CartContext = ({ children }) => {
+  const cartId = Cookies.get('cartId');
+  const [result] = useQuery(
+    {
+      query: getCart,
+      variables: { cartId }
+    },
+  )
+  const { data, fetching, error } = result;
+
+  const cart = useMemo(() => {
+
+    if(data){
+      return {
+        cartId: data.cart.id,
+        totalQuantity: data.cart.lines.edges.length,
+        totalCostAndCurrency:[data.cart.cost.totalAmount.amount,data.cart.cost.totalAmount.currencyCode],
+        productsList: data.cart.lines.edges,
+        isLoading: fetching
+      }
+    }
+   
+
+  }, [data, fetching, error]);
+
+  return (
+    <MyContext.Provider value={cart}>
+      {children}
+    </MyContext.Provider>
+  )
 
 }
 
