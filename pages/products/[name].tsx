@@ -62,7 +62,7 @@ export const getStaticPaths = async () => {
     fallback: false
   }
 }
-const ProductPage = ({ data }) => (<SingleProductPage data={data}/>)
+const ProductPage = ({ data }) => (<SingleProductPage productData={data}/>)
 
 export async function getStaticProps(context) {
   const productName = context.params.name;

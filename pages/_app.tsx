@@ -42,7 +42,8 @@ export default function MyApp(props: MyAppProps) {
           <CartContext>
             <Component {...pageProps} />
           </CartContext>
-        </Provider></ThemeProvider>
+        </Provider>
+        </ThemeProvider>
     </CacheProvider>
   )
 }

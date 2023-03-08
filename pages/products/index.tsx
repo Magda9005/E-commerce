@@ -5,14 +5,14 @@ import styles from './index.module.scss';
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import { useRef, useState, useContext } from "react";
-// import { CartContext } from "../cart";
+import { MyContext } from "../../components/CartContext";
 
 const ProductsList = ({ data }) => {
   const products = data.data.products.edges
   const [productsList, setProductsList] = useState(products)
   const cursorRef = useRef(data.data.products.pageInfo.endCursor);
   const hasNextPageRef = useRef(data.data.products.pageInfo.hasNextPage)
-  // const itemsQuantity = useContext(CartContext);
+  const itemsQuantity = useContext(MyContext);
   const getNextProducts = async (cursorRef: string) => {
     const url = process.env.NEXT_PUBLIC_API;
     const token = process.env.NEXT_PUBLIC_API_TOKEN;
@@ -76,7 +76,7 @@ const ProductsList = ({ data }) => {
 
   return (
     <>
-      <Navbar itemsQuantity={10} />
+      <Navbar itemsQuantity={itemsQuantity?.totalQuantity} />
       <div className={styles.container}>
         {productsList.map(product => <ListElement
           key={product.node.id}
