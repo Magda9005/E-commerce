@@ -3,9 +3,20 @@ import { MyContext } from '../../components/CartContext';
 import Navbar from '../../components/Navbar';
 import EmptyCartInfo from '../../components/EmptyCartInfo';
 import { useMutation } from 'urql';
-import NumberInput from '../../components/NumberInput';
 import { useDebouncedCallback } from 'use-debounce';
 import { formatPrice } from '../../helperFunctions/helperFunctions';
+import { gql } from 'graphql-tag';
+import * as React from 'react';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import CartLine from '../../components/CartLine';
+import styles from './index.module.scss';
+import TableHeadCart from '../../components/TableHead';
+
+
 
 
 const removeLine = `mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
@@ -26,7 +37,7 @@ const removeLine = `mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
     }
   }`
 
-const updateSingleLineQuantity=`mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
+const updateSingleLineQuantity = `mutation cartLinesUpdate($cartId: ID!, $lines: [CartLineUpdateInput!]!) {
     cartLinesUpdate(cartId: $cartId, lines: $lines) {
       cart {
        lines(first:20){
@@ -47,16 +58,16 @@ const Cart = () => {
 
     const context = useContext(MyContext);
     const [result, executeMutation] = useMutation(removeLine);
-    const[updateLineResult,updateLine]=useMutation(updateSingleLineQuantity);
+    const [updateLineResult, updateLine] = useMutation(updateSingleLineQuantity);
     const cartId = context?.cartId
-    // const totalCost=formatPrice(context?.totalCostAndCurrency[1],context?.totalCostAndCurrency[0])
+    const totalCost = formatPrice(context?.totalCostAndCurrency[1], context?.totalCostAndCurrency[0])
 
     console.log(context)
     // const [quantity,setQuantity]=useState()
 
-    const removeItem = (lineId:String) => {
+    const removeItem = (lineId: String) => {
         const lineIds = [lineId];
-        executeMutation({cartId, lineIds});
+        executeMutation({ cartId, lineIds });
     }
 
     console.log(context?.cartId)
@@ -65,56 +76,65 @@ const Cart = () => {
 
     const debounced = useDebouncedCallback(
         // mutowanie linii w koszyku
-        (cartId,lines) => {
-          updateLine({cartId,lines});
+        (cartId, lines) => {
+            updateLine({ cartId, lines });
         },
         // delay in ms
         200
-      );
-
+    );
+      
+    if(!context) return null
+    
     return (
         <>
             <Navbar itemsQuantity={context?.totalQuantity} />
-            {/* {context?.productsList.length===0 && <EmptyCartInfo/>} */}
-            {context?.productsList?.map(product => {
-                const title = product.node.merchandise.product.title
-                const variant = product.node.merchandise.title
-                const quantity = product.node.quantity
-                const currency=product.node.cost.totalAmount.currencyCode
-                const pricePerUnit = formatPrice(currency,product.node.merchandise.price.amount)
-                const pricePerLine = formatPrice(currency,product.node.cost.totalAmount.amount)
-                const imgUrl = product.node.merchandise.product.images.edges[0].node.url
-                const lineId = product.node.id
-                return (
-                    <div>
-                        {title} <br/>
-                        {variant} <br/>
-                       cena jednostk: {pricePerUnit}   suma:{pricePerLine}, 
-                    
-                        <NumberInput 
-                        availableQuantity={product.node.merchandise.quantityAvailable} 
-                        value={quantity} 
-                        
-                        onValueChange={(value)=>debounced(cartId,[{"id":product.node.id,"quantity":value}])}
-                       />
-                        {/* <img src={imgUrl} /> */}
-                        <button onClick={() => {
-                            removeItem(lineId)
+            {context?.productsList?.length===0 && <EmptyCartInfo/>}
+            <div className={styles.tableContainer}>
+                <TableContainer component={Paper}>
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        {context?.productsList?.map((product, index) => {
+                            const title = product.node.merchandise.product.title
+                            const variant = product.node.merchandise.title
+                            const quantity = product.node.quantity
+                            const currency = product.node.cost.totalAmount.currencyCode
+                            const pricePerUnit = formatPrice(currency, product.node.merchandise.price.amount)
+                            const pricePerLine = formatPrice(currency, product.node.cost.totalAmount.amount)
+                            const imgUrl = product.node.merchandise.product.images.edges[0].node.url
+                            const lineId = product.node.id
+                            const handle = product.node.merchandise.product.handle
+                            if (index === 0) {
+                                return (
+                                    <>
+                                        <TableHeadCart />
+                                        <CartLine title={title} variant={variant} availableQuantity={product.node.merchandise.quantityAvailable} quantity={quantity} onClick={() => {
+                                            removeItem(lineId)
+                                        }} onValueChange={(value) => debounced(cartId, [{ "id": product.node.id, "quantity": value }])}
+                                            pricePerUnit={pricePerUnit} pricePerLine={pricePerLine} handle={handle} imgUrl={imgUrl} />
+                                    </>
+                                )
+                            } else {
+                                return (
+                                    <CartLine title={title} variant={variant} availableQuantity={product.node.merchandise.quantityAvailable} quantity={quantity} onClick={() => {
+                                        removeItem(lineId)
+                                    }} onValueChange={(value) => debounced(cartId, [{ "id": product.node.id, "quantity": value }])}
+                                        pricePerUnit={pricePerUnit} pricePerLine={pricePerLine} handle={handle} imgUrl={imgUrl} />
+                                )
+                            }
                         }
-                        }>Remove item</button>
-                    </div>
-
-                )
-            }
-            )
-            }
-            {/* total of cart:{totalCost} */}
+                        )
+                        }
+                       {context?.productsList?.length>0 && <TableRow >
+                            <TableCell className={styles.cost} colSpan="7" align="right" >Total cost: <span className={styles.totalCost}>{totalCost}</span></TableCell>
+                        </TableRow>}
+                    </Table>
+                </TableContainer>
+            </div>
         </>
+
+
+
     )
 }
 
-//tutaj na zwiększenie ilości w koszyku lub usuniecie czego tez trzeba apdejtowac koszyk
-
 export default Cart;
 
-//InputNumber - na onchangea musimy robic mutacje ktora zmieni ilosc danego produktu w koszyku
