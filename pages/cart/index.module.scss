@@ -1,0 +1,24 @@
+@import '../../breakpoints.scss';
+
+.tableContainer{
+    display:flex;
+    justify-content: center;
+    padding:1em;
+
+    @include md{
+        padding:3em;
+        padding-top:1em
+    }
+
+}
+
+.cost,.totalCost {
+@include md{
+    font-size:16px;
+}
+}
+.totalCost{
+    font-weight:bold;
+
+}
+
