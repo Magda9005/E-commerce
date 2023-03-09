@@ -1,0 +1,9 @@
+@import '../breakpoints.scss';
+
+.header{
+    font-weight:bold;
+
+    @include md{
+        font-size:1em;
+    }
+}
