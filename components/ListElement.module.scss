@@ -1,40 +1,39 @@
-@import '.././breakpoints.scss';
+@import ".././breakpoints.scss";
 
 .productCard {
-    margin: 1.5em;
-    margin-bottom: 0.8em;
+  margin: 1.5em;
+  margin-bottom: 0.8em;
 
-    @include md {
-        max-width: 30%;
-    }
+  @include md {
+    max-width: 30%;
+  }
 
-    @include lg {
-        max-width: 30%;
-    }
-
+  @include lg {
+    max-width: 30%;
+  }
 }
 
 .price {
-    display: inline-block;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    font-size: 1.2em;
+  display: inline-block;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  font-size: 1.2em;
 }
 
 .cardContent {
-    height: 220px;
+  height: 220px;
 }
 
 .link {
-    text-decoration: none;
-    color: inherit;
+  text-decoration: none;
+  color: inherit;
 }
 
 .description {
-    max-height: 10em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
+  max-height: 10em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
 }

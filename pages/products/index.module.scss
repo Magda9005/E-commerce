@@ -1,21 +1,20 @@
-.container{
-    display:flex;
-    flex-wrap:wrap;
-    margin-top:10px;
-    justify-content: space-evenly;
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  justify-content: space-evenly;
 }
 
-
-.loadMoreButton{
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    margin-top:1.5em;
-    color:grey;
-    border:0.5px solid grey;
-    transform:border .3s;
+.loadMoreButton {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 1.5em;
+  color: grey;
+  border: 0.5px solid grey;
+  transform: border 0.3s;
 }
 
-.loadMoreButton:hover{
-    border:1px solid lightgrey;
+.loadMoreButton:hover {
+  border: 1px solid lightgrey;
 }

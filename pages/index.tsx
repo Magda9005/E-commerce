@@ -1,7 +1,6 @@
 import MainPage from "../components/MainPage";
 import Head from "next/head";
 
-
 const WelcomePage = () => {
   return (
     <>
@@ -10,8 +9,7 @@ const WelcomePage = () => {
       </Head>
       <MainPage />
     </>
-  )
-
-}
+  );
+};
 
 export default WelcomePage;

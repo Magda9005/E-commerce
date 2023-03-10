@@ -1,37 +1,36 @@
-@import '../breakpoints.scss';
+@import "../breakpoints.scss";
 
-.imgContainer{
-    width:50px;
-    height:50px;
-    position:relative;
+.imgContainer {
+  width: 50px;
+  height: 50px;
+  position: relative;
 
-    @include md{
-        width:80px;
-        height:80px;
-    }
+  @include md {
+    width: 80px;
+    height: 80px;
+  }
 
-    @include lg{
-        width:100px;
-        height:100px;
-    }
+  @include lg {
+    width: 100px;
+    height: 100px;
+  }
 }
 
-.removeProductButton{
-    width:50px;
-    height:50px;
-    border:none;
-    background-color: transparent;
-    cursor:pointer;
+.removeProductButton {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 
-    @include md{
-        width:80px;
-        height:80px;
-    }
-
+  @include md {
+    width: 80px;
+    height: 80px;
+  }
 }
 
-.text{
-    @include md{
-        font-size:16px;
-    }
+.text {
+  @include md {
+    font-size: 16px;
+  }
 }
