@@ -1,124 +1,70 @@
 import SingleProductPage from "../../components/SingleProductPage";
+import { GetStaticProps,GetStaticPaths } from "next";
+import { withUrqlClient, initUrqlClient } from "next-urql";
+import {
+  ssrExchange,
+  dedupExchange,
+  cacheExchange,
+  fetchExchange,
+  useQuery,
+} from "urql";
+import { fetchOptions } from "../../helperFunctions/fetchOptions";
+import { getSingleProductQuery, getProductsPathsQuery } from "../../queries/queries";
+import { createClient } from "urql";
 
-export const getStaticPaths = async () => {
-  const url = process.env.NEXT_PUBLIC_API
-  const token = process.env.NEXT_PUBLIC_API_TOKEN;
-  const query = ` {
-      products(first: 30) {
-       pageInfo {
-        hasNextPage
-        endCursor
-      }
-        edges {
-          node {
-            id
-            title
-            handle
-            description
-            variants(first: 1) {
-        edges {
-          node {
-            price {
-              amount
-            }
-          }
-        }
-      }
-            images(first:1){
-        edges {
-          node{
-            url
-          }
-        }
-      }
-          }
-        }
-      
-      }
-    }
-  `
-  const res = await fetch(url,
-    {
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token
-      },
-      body: JSON.stringify({
-        query: query
-      })
-    })
-  const data = await res.json()
-  const products = data.data.products.edges
-  const paths = products.map(product => {
+interface Props {
+  productName: string;
+}
+
+const ProductPage = ({ productName }: Props) => {
+  const [res] = useQuery({
+    query: getSingleProductQuery,
+    variables: { productName },
+  });
+
+  return <SingleProductPage productData={res} />;
+};
+
+export const getStaticPaths:GetStaticPaths = async () => {
+  const client = createClient({ ...fetchOptions });
+
+  const data = await client.query(getProductsPathsQuery,{}).toPromise();
+
+  const products =data.data.products.edges;
+  const paths = products.map((product) => {
     return {
-      params: { name: product.node.handle }
-    }
-  })
-
+      params: { name: product.node.handle },
+    };
+  });
 
   return {
     paths: paths,
-    fallback: false
-  }
-}
-const ProductPage = ({ data }) => (<SingleProductPage productData={data}/>)
+    fallback: false,
+  };
+};
 
-export async function getStaticProps(context) {
-  const productName = context.params.name;
-
-  const url = process.env.NEXT_PUBLIC_API
-  const token = process.env.NEXT_PUBLIC_API_TOKEN;
-  const variables = { productName };
-  const query = `query GetSingleProduct($productName:String!){
-        product(handle: $productName){
-               id
-               title
-               handle
-               description
-               variants(first: 3) {
-           edges {
-             node {
-              id
-              quantityAvailable
-							selectedOptions {
-            value
-          }
-               price {
-                 amount
-               }
-             }
-           }
-         }
-               images(first:1){
-           edges {
-             node{
-               url
-             }
-           }
-         }
-             }
-           }
-         `
-  const res = await fetch(url,
+export const getStaticProps:GetStaticProps=async(context)=> {
+  const ssrCache = ssrExchange({ isClient: false });
+  const client = initUrqlClient(
     {
-      method: 'POST',
-      headers: {
-        "Content-type": "application/json",
-        "X-Shopify-Storefront-Access-Token": token
-      },
-      body: JSON.stringify({
-        query,
-        variables
-      })
-    })
-  const data = await res.json();
+      url: fetchOptions.url,
+      fetchOptions: fetchOptions.fetchOptions,
+      exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
+    },
+    false
+  );
+  const productName = context?.params?.name as string;
+  const variables = { productName };
+
+  await client?.query(getSingleProductQuery, variables).toPromise();
 
   return {
     props: {
-      data
+      urqlState: ssrCache.extractData(),
+      productName,
     },
-  }
+    revalidate: 600,
+  };
 }
 
-export default ProductPage;
+export default withUrqlClient((ssr) => ({ ...fetchOptions }))(ProductPage);
