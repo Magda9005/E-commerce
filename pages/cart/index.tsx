@@ -24,12 +24,6 @@ const Cart = () => {
   const [updateLineResult, updateLine] = useMutation(updateSingleLineQuantity);
   const cartId = context?.cartId;
   const [error,setError]=useState(false)
-//   const totalCost = formatPrice(
-//     context?.totalCostAndCurrency[1],
-//     context?.totalCostAndCurrency[0]
-//   );
-
-  console.log(context);
 
   const removeItem = (lineId: string) => {
     const lineIds = [lineId];
@@ -55,6 +49,12 @@ const Cart = () => {
   );
 
   if (!context) return null;
+
+  //   const totalCost = formatPrice(
+//     context?.totalCostAndCurrency[1],
+//     context?.totalCostAndCurrency[0]
+//   );
+
 
   return (
     <>

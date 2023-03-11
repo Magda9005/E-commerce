@@ -16,6 +16,7 @@ import {
 } from "urql";
 import { fetchOptions } from "../../helperFunctions/fetchOptions";
 import {getFirst3productsQuery} from '../../queries/queries';
+import { GetStaticProps } from "next";
 
 const query = `query GetNextProducts($cursorRef:String!) {
   products(first: 3,after:$cursorRef) {
@@ -58,10 +59,10 @@ const ProductsList = () => {
     query: getFirst3productsQuery
   });
 
-  const products = data.data.products.edges;
+  const products = data?.data?.products.edges;
   const [productsList, setProductsList] = useState(products);
-  const cursorRef = useRef(data.data.products.pageInfo.endCursor);
-  const hasNextPageRef = useRef(data.data.products.pageInfo.hasNextPage);
+  const cursorRef = useRef(data?.data?.products.pageInfo.endCursor);
+  const hasNextPageRef = useRef(data?.data?.products.pageInfo.hasNextPage);
   const itemsQuantity = useContext(MyContext);
 
   const getNextProducts = async (cursorRef: string) => {
@@ -123,12 +124,8 @@ const ProductsList = () => {
   );
 };
 
-// export default ProductsList;
 
-export async function getStaticProps(context) {
-  // const url = process.env.NEXT_PUBLIC_API;
-  // const token = process.env.NEXT_PUBLIC_API_TOKEN;
-  
+export const getStaticProps:GetStaticProps=async(context)=> {
 const ssrCache = ssrExchange({ isClient: false });
   const client = initUrqlClient(
     {
@@ -139,7 +136,7 @@ const ssrCache = ssrExchange({ isClient: false });
     false
   );
 
-  await client?.query(getFirst3productsQuery).toPromise();
+  await client?.query(getFirst3productsQuery,{}).toPromise();
 
   return {
     props: {
@@ -147,22 +144,5 @@ const ssrCache = ssrExchange({ isClient: false });
     },
     revalidate: 600,
   };
-  // const res = await fetch(url, {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-type": "application/json",
-  //     "X-Shopify-Storefront-Access-Token": token,
-  //   },
-  //   body: JSON.stringify({
-  //     query: query,
-  //   }),
-  // });
-  // const data = await res.json();
-
-  // return {
-  //   props: {
-  //     data,
-  //   },
-  // };
 }
 export default withUrqlClient((ssr) => ({ ...fetchOptions }))(ProductsList);
