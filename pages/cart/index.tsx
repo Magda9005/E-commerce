@@ -16,12 +16,14 @@ import CartLine from "../../components/CartLine";
 import styles from "./index.module.scss";
 import TableHeadCart from "../../components/TableHead";
 import {removeLine,updateSingleLineQuantity} from '../../mutations/mutations';
+import ErrorMessage from "../../components/ErrorMessage";
 
 const Cart = () => {
   const context = useContext(MyContext);
   const [result, executeMutation] = useMutation(removeLine);
   const [updateLineResult, updateLine] = useMutation(updateSingleLineQuantity);
   const cartId = context?.cartId;
+  const [error,setError]=useState(false)
 //   const totalCost = formatPrice(
 //     context?.totalCostAndCurrency[1],
 //     context?.totalCostAndCurrency[0]
@@ -31,13 +33,23 @@ const Cart = () => {
 
   const removeItem = (lineId: string) => {
     const lineIds = [lineId];
-    executeMutation({ cartId, lineIds });
+    executeMutation({ cartId, lineIds }).then(result=>{
+      if(result.error){
+        setError(true)
+      }
+    });
+    setError(false)
   };
 
  
   const debounced = useDebouncedCallback(
     (cartId, lines) => {
-      updateLine({ cartId, lines });
+      updateLine({ cartId, lines }).then(result=>{
+        if(result.error){
+          setError(true)
+        }
+      });
+      setError(false)
     },
     200
   );
@@ -50,6 +62,7 @@ const Cart = () => {
       {context?.productsList?.length === 0 && <EmptyCartInfo />}
       <div className={styles.tableContainer}>
         <TableContainer component={Paper}>
+        {error && <ErrorMessage errorMessage={"Sorry, could not perform your demand, please try again"}/>}
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             {context?.productsList?.map((product, index) => {
               const title = product.node.merchandise.product.title;
