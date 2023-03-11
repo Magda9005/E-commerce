@@ -10,7 +10,7 @@ export const MyContext = createContext();
 interface Props {
   children: React.ReactNode
 }
-const CartContext = ({ children }:Props) => {
+const CartContext = ({ children }: Props) => {
   const cartId = Cookies.get("cartId") as string;
 
   const [result] = useQuery({
@@ -32,6 +32,9 @@ const CartContext = ({ children }:Props) => {
         productsList: data.cart.lines.edges,
         isLoading: fetching,
       };
+    }
+    else return {
+      productsList: []
     }
   }, [data, fetching, error]);
 

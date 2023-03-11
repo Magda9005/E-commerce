@@ -8,6 +8,8 @@ import SizeSelectElement from "./SizeSelectElement";
 import NumberInput from "./NumberInput";
 import AddToCartButton from "./AddToCartButton";
 import { formatPrice } from "../helperFunctions/helperFunctions";
+import { CombinedError } from "urql";
+import ErrorMessage from "./ErrorMessage";
 
 interface Props {
   img: string;
@@ -21,6 +23,7 @@ interface Props {
   value: number;
   onValueChange: (value: number) => void;
   variant: string;
+  error:CombinedError | undefined;
 }
 
 const ProductCard = ({
@@ -35,6 +38,7 @@ const ProductCard = ({
   value,
   onValueChange,
   variant,
+  error
 }: Props) => {
   return (
     <Card sx={{ display: "flex" }} className={styles.container}>
@@ -62,8 +66,10 @@ const ProductCard = ({
           value={value}
           onValueChange={onValueChange}
         />
+        {error && <ErrorMessage errorMessage={"Sorry could not add your product, please try again"}/>
+         }
         <AddToCartButton onClick={onClick} />
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" className={styles.description}>
           {description}
         </Typography>
       </CardContent>

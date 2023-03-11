@@ -4,48 +4,64 @@ import { useState, useContext } from "react";
 import styles from "./SingleProductPage.module.scss";
 import { MyContext } from "./CartContext";
 import Cookies from "js-cookie";
-import { useMutation } from "urql";
+import { cacheExchange, useMutation } from "urql";
 import {createCartMutation,addProductToCartMutation} from '../mutations/mutations';
+import { Product } from "../gql/graphql";
 
+interface Props {
+  productData: {
+    data:{
+      product:Product
+    }
+  }
+}
 
-const SingleProductPage = ({ productData }) => {
-  const product = productData.data.product;
-  const quantityOfFirstVariant =
-    product.variants.edges[0].node.quantityAvailable;
-  const [selectedVariantId, setSelectedVariantId] = useState(
-    product.variants.edges[0].node.id
-  );
-  const [price, setPrice] = useState(
-    product.variants.edges[0].node.price.amount
-  );
-  const [availableQuantity, setAvailableQuantity] = useState(
-    quantityOfFirstVariant
-  );
-  const [selectedQuantity, setSelectedQuantity] = useState(1);
-  const variants = product.variants.edges.map((variant) => {
-    return variant.node.selectedOptions[0].value;
-  });
-
+const SingleProductPage = ({ productData }:Props) => {
   const cartContext = useContext(MyContext);
+  const product = productData.data.product;
+  const quantityOfFirstVariant = product.variants.edges[0].node.quantityAvailable;
+  const [selectedVariantId, setSelectedVariantId] = useState(product.variants.edges[0].node.id);
+  const [price, setPrice] = useState(product.variants.edges[0].node.price.amount);
+  const [availableQuantity, setAvailableQuantity] = useState(quantityOfFirstVariant);
+  const [selectedQuantity, setSelectedQuantity] = useState(1);
+  const variants = product.variants.edges.map((variant) => {return variant.node.selectedOptions[0].value;});
+  const [size, setSize] = useState(variants[0]);
+  const [errorMessage,setErrorMessage]=useState(false);
   const [createCartResult, createCart] = useMutation(createCartMutation);
   const [addProductResult, addProduct] = useMutation(addProductToCartMutation);
-  // const { data, fetching, error } = createCartResult;
+  const { data, fetching, error } = addProductResult;
 
-  const [size, setSize] = useState(variants[0]);
 
   const handleAddProductToCart = () => {
-    //pobieramy z cookies Id koszyka
-    const cartId = Cookies.get("cartId");
-
-    //jeżeli nie ma w cookies koszyka, musimy utworzyc koszyk, pobrac z responsa id koszyka i ustawic jako cookies
+    const cartId = Cookies.get("cartId") as string;
     if (!cartId) {
       createCart({ selectedVariantId, selectedQuantity }).then((result) =>
         Cookies.set("cartId", result.data.cartCreate.cart.id)
       );
     }
-    //jeżeli koszyk istnieje w cookies to dodajemy tylko produkt
-    addProduct({ cartId, selectedQuantity, selectedVariantId });
+    addProduct({ cartId, selectedQuantity, selectedVariantId }).then(result=>{
+      if(result.error){
+        setErrorMessage(true)
+      }
+    });
+
+    // cacheExchange({
+    //   updates: {
+    //     Mutation: {
+    //       addProduct(_result, args, cache, _info) {
+    //         cache.invalidate({
+    //           __typename: 'Cart',
+    //           id: args.cartId,
+    //         });
+    //       },
+    //     },
+    //   },
+    // });
+
+    setErrorMessage(false);
+
   };
+
 
   return (
     <>
@@ -64,6 +80,7 @@ const SingleProductPage = ({ productData }) => {
           }}
           onClick={handleAddProductToCart}
           variant={size}
+          error={error}
           handleSelectChange={(value) => {
             const variants = product.variants.edges;
             for (let variant of variants) {
