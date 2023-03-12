@@ -1,7 +1,6 @@
 @import ".././breakpoints.scss";
 
 .productCard {
-  margin: 1.5em;
   margin-bottom: 0.8em;
 
   @include md {
@@ -13,6 +12,15 @@
   }
 }
 
+.cardMedia{
+  height:350px;
+
+  @include lg{
+    height:450px;
+  }
+
+}
+
 .price {
   display: inline-block;
   margin-top: 1em;
@@ -21,7 +29,7 @@
 }
 
 .cardContent {
-  height: 220px;
+  height: 200px;
 }
 
 .link {

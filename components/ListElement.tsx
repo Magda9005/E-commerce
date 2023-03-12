@@ -33,9 +33,9 @@ const ListElement = ({
         >
           <CardMedia
             component="img"
-            height="350"
             image={img}
             alt={productName}
+            className={styles.cardMedia}
           />
           <CardContent className={styles.cardContent}>
             <Typography gutterBottom variant="h5" component="div">
