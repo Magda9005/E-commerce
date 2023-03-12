@@ -1,0 +1,11 @@
+@import "../breakpoints.scss";
+
+.cost,
+.totalCost {
+  @include md {
+    font-size: 16px;
+  }
+}
+.totalCost {
+  font-weight: bold;
+}

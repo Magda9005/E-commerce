@@ -23,17 +23,17 @@ const useCart = () => {
         ],
         productsList: data.cart.lines.edges,
         isLoading: fetching,
-        error:error
+        error: error,
       };
-    }
-    else return {
-      productsList: [],
-      totalCostAndCurrency: []
-    }
+    } else
+      return {
+        cartId: "",
+        productsList: [],
+        totalCostAndCurrency: [],
+      };
   }, [data, fetching, error]);
 
   return cart;
-}
+};
 
 export default useCart;
-

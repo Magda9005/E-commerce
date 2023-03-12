@@ -1,9 +1,8 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { GetStaticProps } from "next";
 import ListElement from "../../../components/ListElement";
 import Navbar from "../../../components/Navbar";
 import styles from "../categoryName.module.scss";
-import { MyContext } from "../../../components/CartContext";
 import { withUrqlClient, initUrqlClient } from "next-urql";
 import {
   ssrExchange,
@@ -11,12 +10,15 @@ import {
   cacheExchange,
   fetchExchange,
   useQuery,
+  Client,
 } from "urql";
-import { fetchOptions } from "../../../helperFunctions/fetchOptions";
+import { fetchOptions } from "../../../helperFunctionsAndConstants/fetchOptions";
 import { getProductsByCollectionQuery } from "../../../queries/queries";
+import useCart from "../../../hooks/useCart";
+import { categoryPaths } from "../../../helperFunctionsAndConstants/constants";
 
 interface Props {
-  categoryName: string
+  categoryName: string;
 }
 
 const ProductsListPerCategory = ({ categoryName }: Props) => {
@@ -24,25 +26,26 @@ const ProductsListPerCategory = ({ categoryName }: Props) => {
     query: getProductsByCollectionQuery,
     variables: { categoryName },
   });
-  const context = useContext(MyContext);
+  const context = useCart();
 
-  const products = data?.data?.collection?.products.edges ;
+  const products = data?.data?.collection?.products.edges;
   const [productsList, setProductsList] = useState(products);
 
   return (
     <>
       <Navbar itemsQuantity={context?.totalQuantity} />
       <div className={styles.container}>
-        {productsList && productsList.map((product) => (
-          <ListElement
-            key={product.node.id}
-            img={product.node.images.edges[0].node.url}
-            productName={product.node.title}
-            price={product.node.variants.edges[0].node.price.amount}
-            description={product.node.description}
-            handle={`${categoryName}/${product.node.handle}`}
-          />
-        ))}
+        {productsList &&
+          productsList.map((product) => (
+            <ListElement
+              key={product.node.id}
+              img={product.node.images.edges[0].node.url}
+              productName={product.node.title}
+              price={product.node.variants.edges[0].node.price.amount}
+              description={product.node.description}
+              handle={`${categoryName}/${product.node.handle}`}
+            />
+          ))}
       </div>
     </>
   );
@@ -57,11 +60,20 @@ export const getStaticProps: GetStaticProps = async (context) => {
       exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
     },
     false
-  );
-  const categoryName = context?.params?.categoryName as string;
+  ) as Client;
+
+  const categoryName = context.params?.categoryName as string;
   const variables = { categoryName };
 
-  await client?.query(getProductsByCollectionQuery, variables).toPromise();
+  const response = await client
+    .query(getProductsByCollectionQuery, variables)
+    .toPromise();
+
+  if (response.error) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
@@ -70,17 +82,15 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
     revalidate: 600,
   };
-}
+};
 
 export const getStaticPaths = async () => {
   return {
-    paths: [
-      { params: { categoryName: "skin-care" } },
-      { params: { categoryName: "hair-care" } },
-      { params: { categoryName: "makeup" } },
-    ],
+    paths: categoryPaths,
     fallback: false,
   };
 };
 
-export default withUrqlClient((ssr) => ({ ...fetchOptions }))(ProductsListPerCategory);
+export default withUrqlClient((ssr) => ({ ...fetchOptions }))(
+  ProductsListPerCategory
+);

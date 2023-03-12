@@ -119,3 +119,21 @@ export const addProductToCartMutation = graphql(/* GraphQL */ `mutation AddProdu
   }
   `);
 
+export const createCheckout = graphql(/* GraphQL */`mutation checkoutCreate($lineItems: [CheckoutLineItemInput!]!) {
+    checkoutCreate(input: {
+      lineItems: $lineItems
+    }) {
+      checkout {
+         id
+         webUrl
+         lineItems(first: 30) {
+           edges {
+             node {
+               title
+               quantity
+             }
+           }
+         }
+      }
+    }
+  }`)

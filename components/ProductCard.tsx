@@ -6,8 +6,8 @@ import Typography from "@mui/material/Typography";
 import styles from "./ProductCard.module.scss";
 import SizeSelectElement from "./SizeSelectElement";
 import NumberInput from "./NumberInput";
-import AddToCartButton from "./AddToCartButton";
-import { formatPrice } from "../helperFunctions/helperFunctions";
+import Button from "./Button";
+import { formatPrice } from "../helperFunctionsAndConstants/helperFunctions";
 import { CombinedError } from "urql";
 import ErrorMessage from "./ErrorMessage";
 
@@ -23,7 +23,7 @@ interface Props {
   value: number;
   onValueChange: (value: number) => void;
   variant: string;
-  error:CombinedError | undefined;
+  error: CombinedError | undefined;
 }
 
 const ProductCard = ({
@@ -38,7 +38,7 @@ const ProductCard = ({
   value,
   onValueChange,
   variant,
-  error
+  error,
 }: Props) => {
   return (
     <Card sx={{ display: "flex" }} className={styles.container}>
@@ -53,9 +53,7 @@ const ProductCard = ({
         <Typography gutterBottom variant="h5" component="div">
           {productName}
         </Typography>
-        <span className={styles.price}>
-            {formatPrice('eur',price)}
-        </span>
+        <span className={styles.price}>{formatPrice("eur", price)}</span>
         <SizeSelectElement
           variants={variants}
           onChange={handleSelectChange}
@@ -66,10 +64,17 @@ const ProductCard = ({
           value={value}
           onValueChange={onValueChange}
         />
-        {error && <ErrorMessage errorMessage={"Sorry could not add your product, please try again"}/>
-         }
-        <AddToCartButton onClick={onClick} />
-        <Typography variant="body2" color="text.secondary" className={styles.description}>
+        {error && (
+          <ErrorMessage
+            errorMessage={"Sorry could not add your product, please try again"}
+          />
+        )}
+        <Button onClick={onClick} text={"Add to cart"} />
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          className={styles.description}
+        >
           {description}
         </Typography>
       </CardContent>

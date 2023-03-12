@@ -2,6 +2,7 @@
 
 .tableContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   padding: 1em;
 
@@ -9,14 +10,4 @@
     padding: 3em;
     padding-top: 1em;
   }
-}
-
-.cost,
-.totalCost {
-  @include md {
-    font-size: 16px;
-  }
-}
-.totalCost {
-  font-weight: bold;
 }

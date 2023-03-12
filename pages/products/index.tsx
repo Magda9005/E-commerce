@@ -11,29 +11,32 @@ import {
   cacheExchange,
   fetchExchange,
   useQuery,
+  Client,
 } from "urql";
-import { fetchOptions } from "../../helperFunctions/fetchOptions";
-import { getFirst3productsQuery,query } from '../../queries/queries';
+import { fetchOptions } from "../../helperFunctionsAndConstants/fetchOptions";
+import {
+  getFirst3productsQuery,
+  getNextProducts,
+  query,
+} from "../../queries/queries";
 import { GetStaticProps } from "next";
 import useCart from "../../hooks/useCart";
 
-
 const ProductsList = () => {
-
-  const [data]=useQuery({
-    query: getFirst3productsQuery
+  const [data] = useQuery({
+    query: getFirst3productsQuery,
   });
 
-  const products = data?.data?.products.edges;
+  const products = data.data ? data.data.products.edges : [];
   const [productsList, setProductsList] = useState(products);
-  const cursorRef = useRef(data?.data?.products.pageInfo.endCursor);
-  const hasNextPageRef = useRef(data?.data?.products.pageInfo.hasNextPage);
+  const cursorRef = useRef(data.data?.products.pageInfo.endCursor);
+  const hasNextPageRef = useRef(data.data?.products.pageInfo.hasNextPage);
   const itemsQuantity = useCart();
 
   const getNextProducts = async (cursorRef: string) => {
     const url = process.env.NEXT_PUBLIC_API as string;
     const token = process.env.NEXT_PUBLIC_API_TOKEN;
-    
+
     const variables = { cursorRef };
 
     const res = await fetch(url, {
@@ -41,7 +44,7 @@ const ProductsList = () => {
       headers: {
         "Content-type": "application/json",
         "X-Shopify-Storefront-Access-Token": token,
-      },
+      } as HeadersInit,
       body: JSON.stringify({
         query,
         variables,
@@ -61,7 +64,7 @@ const ProductsList = () => {
     <>
       <Navbar itemsQuantity={itemsQuantity.totalQuantity} />
       <div className={styles.container}>
-        {productsList.map((product) => (
+        {productsList?.map((product) => (
           <ListElement
             key={product.node.id}
             img={product.node.images.edges[0].node.url}
@@ -77,7 +80,7 @@ const ProductsList = () => {
           className={styles.loadMoreButton}
           variant="outlined"
           onClick={() => {
-            if(cursorRef.current){
+            if (cursorRef.current) {
               getNextProducts(cursorRef.current).then((res) => {
                 cursorRef.current = res.newCursorRef;
                 hasNextPageRef.current = res.hasNextPage;
@@ -101,14 +104,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
       exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
     },
     false
-  );
+  ) as Client;
 
-  const response = await client?.query(getFirst3productsQuery, {}).toPromise()
+  const response = await client.query(getFirst3productsQuery, {}).toPromise();
 
-  if (response?.error) {
+  if (response.error) {
     return {
-      notFound: true
-    }
+      notFound: true,
+    };
   }
 
   return {
@@ -117,5 +120,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
     },
     revalidate: 600,
   };
-}
+};
 export default withUrqlClient((ssr) => ({ ...fetchOptions }))(ProductsList);

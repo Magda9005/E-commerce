@@ -25,7 +25,7 @@ const NumberInput = ({ availableQuantity, value, onValueChange }: Props) => {
       type="number"
       value={value}
       onChange={(event) => onValueChange(parseInt(event.target.value))}
-      sx={{marginBottom:'1em'}}
+      sx={{ marginBottom: "1em" }}
       InputProps={{
         inputProps: {
           min: availableQuantity === 0 ? 0 : 1,

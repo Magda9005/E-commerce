@@ -39,8 +39,7 @@ const Navbar = ({ itemsQuantity }: Props) => {
   };
 
   return (
-    <AppBar position="static" className={styles.navbar}
-    >
+    <AppBar position="static" className={styles.navbar}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -131,11 +130,11 @@ const Navbar = ({ itemsQuantity }: Props) => {
             ))}
           </Box>
           <Box>
-              <Link href="/cart" className={styles.link}>
-                <Badge badgeContent={itemsQuantity} color="secondary">
-                  <ShoppingCartTwoToneIcon />
-                </Badge>
-              </Link>
+            <Link href="/cart" className={styles.link}>
+              <Badge badgeContent={itemsQuantity} color="secondary">
+                <ShoppingCartTwoToneIcon />
+              </Badge>
+            </Link>
           </Box>
         </Toolbar>
       </Container>

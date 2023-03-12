@@ -11,6 +11,7 @@ const MainPage = () => {
             src="/main-page-photo.jpg"
             alt="Hands using a serum"
             fill={true}
+            priority={true}
           />
         </div>
         <div className={styles.container}>

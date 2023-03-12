@@ -3,9 +3,10 @@ import Button from "@mui/material/Button";
 
 interface Props {
   onClick: () => void;
+  text: string;
 }
 
-const AddToCartButton = ({ onClick }: Props) => {
+const AddToCartButton = ({ onClick, text }: Props) => {
   return (
     <Button
       variant="contained"
@@ -21,7 +22,7 @@ const AddToCartButton = ({ onClick }: Props) => {
         },
       }}
     >
-      Add To Cart
+      {text}
     </Button>
   );
 };

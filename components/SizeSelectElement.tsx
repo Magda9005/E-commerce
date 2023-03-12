@@ -31,7 +31,9 @@ export default function SizeSelectElement({
         >
           {variants &&
             variants.map((variant) => (
-              <MenuItem value={variant}>{variant}</MenuItem>
+              <MenuItem key={variant} value={variant}>
+                {variant}
+              </MenuItem>
             ))}
         </Select>
       </FormControl>

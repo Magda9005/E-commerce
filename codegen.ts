@@ -10,7 +10,7 @@ const config: CodegenConfig = {
       },
     },
   },
-  documents:["pages/**/*.tsx","queries/**/*.tsx","mutations/**/*.tsx"] ,
+  documents: ["pages/**/*.tsx", "queries/**/*.tsx", "mutations/**/*.tsx"],
   generates: {
     "./gql/": {
       preset: "client",

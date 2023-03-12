@@ -29,11 +29,10 @@
   }
 }
 
+.description {
+  margin-top: 2em;
 
-.description{
-  margin-top:2em;
-
-  @include lg{
-    font-size:1.1rem;
+  @include lg {
+    font-size: 1.1rem;
   }
 }

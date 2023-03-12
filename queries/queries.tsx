@@ -197,3 +197,74 @@ export const getFirst3productsQuery =graphql(/* GraphQL */ `query GetFirst3Produ
   }
 }
 `);
+
+
+export const query = `query GetNextProducts($cursorRef:String!) {
+  products(first: 3,after:$cursorRef) {
+   pageInfo {
+    hasNextPage
+    endCursor
+  }
+    edges {
+      node {
+        id
+        title
+        handle
+        description
+        variants(first: 1) {
+    edges {
+      node {
+        price {
+          amount
+        }
+      }
+    }
+  }
+        images(first:1){
+    edges {
+      node{
+        url
+      }
+    }
+  }
+      }
+    }
+  
+  }
+}
+`;
+
+export const getNextProducts=graphql(/* GraphQL */`query GetNextProducts($cursorRef:String!) {
+  products(first: 3,after:$cursorRef) {
+   pageInfo {
+    hasNextPage
+    endCursor
+  }
+    edges {
+      node {
+        id
+        title
+        handle
+        description
+        variants(first: 1) {
+    edges {
+      node {
+        price {
+          amount
+        }
+      }
+    }
+  }
+        images(first:1){
+    edges {
+      node{
+        url
+      }
+    }
+  }
+      }
+    }
+  
+  }
+}
+`);

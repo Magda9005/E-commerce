@@ -7,9 +7,13 @@ import {
   cacheExchange,
   fetchExchange,
   useQuery,
+  Client,
 } from "urql";
-import { fetchOptions } from "../../../../helperFunctions/fetchOptions";
-import { getSingleProductQuery, getProductsPathsQuery } from "../../../../queries/queries";
+import { fetchOptions } from "../../../../helperFunctionsAndConstants/fetchOptions";
+import {
+  getSingleProductQuery,
+  getProductsPathsQuery,
+} from "../../../../queries/queries";
 import { createClient } from "urql";
 
 interface Props {
@@ -28,9 +32,9 @@ const ProductPage = ({ productName }: Props) => {
 export const getStaticPaths = async () => {
   const client = createClient({ ...fetchOptions });
 
-  const data = await client.query(getProductsPathsQuery,{}).toPromise();
+  const data = await client.query(getProductsPathsQuery, {}).toPromise();
 
-  const products = data.data.products.edges;
+  const products = data.data ? data.data.products.edges : [];
   const paths = products.map((product) => {
     return {
       params: {
@@ -46,7 +50,7 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps:GetStaticProps=async(context)=> {
+export const getStaticProps: GetStaticProps = async (context) => {
   const ssrCache = ssrExchange({ isClient: false });
   const client = initUrqlClient(
     {
@@ -55,13 +59,20 @@ export const getStaticProps:GetStaticProps=async(context)=> {
       exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
     },
     false
-  );
+  ) as Client;
 
-  const productName = context?.params?.productName as string;
+  const productName = context.params?.productName as string;
   const variables = { productName };
 
-  await client?.query(getSingleProductQuery, variables).toPromise();
+  const response = await client
+    .query(getSingleProductQuery, variables)
+    .toPromise();
 
+  if (response.error) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
@@ -70,6 +81,6 @@ export const getStaticProps:GetStaticProps=async(context)=> {
     },
     revalidate: 600,
   };
-}
+};
 
 export default withUrqlClient((ssr) => ({ ...fetchOptions }))(ProductPage);
