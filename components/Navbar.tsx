@@ -23,7 +23,7 @@ const pages = [
 ];
 
 interface Props {
-  itemsQuantity: number;
+  itemsQuantity: number | undefined;
 }
 
 const Navbar = ({ itemsQuantity }: Props) => {
@@ -39,7 +39,8 @@ const Navbar = ({ itemsQuantity }: Props) => {
   };
 
   return (
-    <AppBar position="static" className={styles.navbar}>
+    <AppBar position="static" className={styles.navbar}
+    >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -118,7 +119,7 @@ const Navbar = ({ itemsQuantity }: Props) => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
-              <Link href={page.href} className={styles.link}>
+              <Link key={page.href} href={page.href} className={styles.link}>
                 <Button
                   key={page.name}
                   onClick={handleCloseNavMenu}
@@ -130,17 +131,11 @@ const Navbar = ({ itemsQuantity }: Props) => {
             ))}
           </Box>
           <Box>
-            {itemsQuantity > 0 ? (
               <Link href="/cart" className={styles.link}>
                 <Badge badgeContent={itemsQuantity} color="secondary">
                   <ShoppingCartTwoToneIcon />
                 </Badge>
               </Link>
-            ) : (
-              <Link href="/cart" className={styles.link}>
-                <ShoppingCartTwoToneIcon />
-              </Link>
-            )}
           </Box>
         </Toolbar>
       </Container>
