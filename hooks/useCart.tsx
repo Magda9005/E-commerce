@@ -1,18 +1,10 @@
 import { useQuery } from "urql";
 import Cookies from "js-cookie";
-import { useMemo, createContext } from "react";
+import { useMemo } from "react";
 import { getCart } from "../queries/queries";
-// import { formatPrice } from '../helperFunctions/helperFunctions';
 
-
-export const MyContext = createContext();
-
-interface Props {
-  children: React.ReactNode
-}
-const CartContext = ({ children }: Props) => {
+const useCart = () => {
   const cartId = Cookies.get("cartId") as string;
-
   const [result] = useQuery({
     query: getCart,
     variables: { cartId },
@@ -24,21 +16,24 @@ const CartContext = ({ children }: Props) => {
     if (data && data.cart) {
       return {
         cartId: data.cart.id,
-        totalQuantity: data.cart.lines.edges.length,
+        totalQuantity: data.cart.totalQuantity,
         totalCostAndCurrency: [
           data.cart.cost.totalAmount.amount,
           data.cart.cost.totalAmount.currencyCode,
         ],
         productsList: data.cart.lines.edges,
         isLoading: fetching,
+        error:error
       };
     }
     else return {
-      productsList: []
+      productsList: [],
+      totalCostAndCurrency: []
     }
   }, [data, fetching, error]);
 
-  return <MyContext.Provider value={cart}>{children}</MyContext.Provider>;
-};
+  return cart;
+}
 
-export default CartContext;
+export default useCart;
+
