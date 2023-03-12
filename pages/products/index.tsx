@@ -1,11 +1,9 @@
 import Navbar from "../../components/Navbar";
-import { useEffect } from "react";
 import ListElement from "../../components/ListElement";
 import styles from "./index.module.scss";
 import * as React from "react";
 import Button from "@mui/material/Button";
-import { useRef, useState, useContext } from "react";
-import { MyContext } from "../../components/CartContext";
+import { useRef, useState } from "react";
 import { withUrqlClient, initUrqlClient } from "next-urql";
 import {
   ssrExchange,
@@ -15,43 +13,10 @@ import {
   useQuery,
 } from "urql";
 import { fetchOptions } from "../../helperFunctions/fetchOptions";
-import {getFirst3productsQuery} from '../../queries/queries';
+import { getFirst3productsQuery,query } from '../../queries/queries';
 import { GetStaticProps } from "next";
+import useCart from "../../hooks/useCart";
 
-const query = `query GetNextProducts($cursorRef:String!) {
-  products(first: 3,after:$cursorRef) {
-   pageInfo {
-    hasNextPage
-    endCursor
-  }
-    edges {
-      node {
-        id
-        title
-        handle
-        description
-        variants(first: 1) {
-    edges {
-      node {
-        price {
-          amount
-        }
-      }
-    }
-  }
-        images(first:1){
-    edges {
-      node{
-        url
-      }
-    }
-  }
-      }
-    }
-  
-  }
-}
-`;
 
 const ProductsList = () => {
 
@@ -63,10 +28,10 @@ const ProductsList = () => {
   const [productsList, setProductsList] = useState(products);
   const cursorRef = useRef(data?.data?.products.pageInfo.endCursor);
   const hasNextPageRef = useRef(data?.data?.products.pageInfo.hasNextPage);
-  const itemsQuantity = useContext(MyContext);
+  const itemsQuantity = useCart();
 
   const getNextProducts = async (cursorRef: string) => {
-    const url = process.env.NEXT_PUBLIC_API;
+    const url = process.env.NEXT_PUBLIC_API as string;
     const token = process.env.NEXT_PUBLIC_API_TOKEN;
     
     const variables = { cursorRef };
@@ -82,6 +47,7 @@ const ProductsList = () => {
         variables,
       }),
     });
+
     const data = await res.json();
 
     setProductsList([...productsList, ...data.data.products.edges]);
@@ -93,7 +59,7 @@ const ProductsList = () => {
 
   return (
     <>
-      <Navbar itemsQuantity={itemsQuantity?.totalQuantity} />
+      <Navbar itemsQuantity={itemsQuantity.totalQuantity} />
       <div className={styles.container}>
         {productsList.map((product) => (
           <ListElement
@@ -111,10 +77,12 @@ const ProductsList = () => {
           className={styles.loadMoreButton}
           variant="outlined"
           onClick={() => {
-            getNextProducts(cursorRef.current).then((res) => {
-              cursorRef.current = res.newCursorRef;
-              hasNextPageRef.current = res.hasNextPage;
-            });
+            if(cursorRef.current){
+              getNextProducts(cursorRef.current).then((res) => {
+                cursorRef.current = res.newCursorRef;
+                hasNextPageRef.current = res.hasNextPage;
+              });
+            }
           }}
         >
           Load More
@@ -124,9 +92,8 @@ const ProductsList = () => {
   );
 };
 
-
-export const getStaticProps:GetStaticProps=async(context)=> {
-const ssrCache = ssrExchange({ isClient: false });
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssrCache = ssrExchange({ isClient: false });
   const client = initUrqlClient(
     {
       url: fetchOptions.url,
@@ -136,7 +103,13 @@ const ssrCache = ssrExchange({ isClient: false });
     false
   );
 
-  await client?.query(getFirst3productsQuery,{}).toPromise();
+  const response = await client?.query(getFirst3productsQuery, {}).toPromise()
+
+  if (response?.error) {
+    return {
+      notFound: true
+    }
+  }
 
   return {
     props: {
