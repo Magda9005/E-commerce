@@ -1,12 +1,14 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
+require('dotenv').config();
+
 
 const config: CodegenConfig = {
   overwrite: true,
   schema: {
-    "https://skin-therapy-6413.myshopify.com/api/2023-01/graphql.json": {
+   [process.env.API as string]: {
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Storefront-Access-Token": `6ed49a8426a76f3ebfce089ee7b70f69`,
+        "X-Shopify-Storefront-Access-Token": `${process.env.API_TOKEN}`,
       },
     },
   },
