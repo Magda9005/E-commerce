@@ -1,6 +1,6 @@
 # E-commerce Skin Therapy
 
-Application using server-side rendering (SSR), created in React and Next.js, using Typescript, Shopify Storefront GraphQL API, Material UI, GraphQL Code Generator and URQL.
+Application using static site generation (SSG), created in React and Next.js, using Typescript, Shopify Storefront GraphQL API, Material UI, GraphQL Code Generator and URQL.
 
 ## How to setup the project:
 
@@ -9,7 +9,7 @@ Application using server-side rendering (SSR), created in React and Next.js, usi
 - `NEXT_PUBLIC_API_TOKEN`
 - `NEXT_PUBLIC_API`
 
-In order to get API endpoint and access token you can follow the Shopify Storefront GraphQL API documentation
+In order to get API endpoint and access token you can follow the Shopify Storefront GraphQL API documentation.
 
 2. Install dependencies: `npm install`
 
