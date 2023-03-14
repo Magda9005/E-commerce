@@ -47,7 +47,7 @@ const Navbar = ({ itemsQuantity }: Props) => {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/products"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },

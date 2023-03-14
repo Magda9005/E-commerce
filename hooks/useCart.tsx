@@ -30,6 +30,7 @@ const useCart = () => {
         cartId: "",
         productsList: [],
         totalCostAndCurrency: [],
+        isLoading:true
       };
   }, [data, fetching, error]);
 

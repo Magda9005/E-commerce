@@ -2,7 +2,6 @@ import Navbar from "./Navbar";
 import ProductCard from "./ProductCard";
 import { useState } from "react";
 import styles from "./SingleProductPage.module.scss";
-// import { MyContext } from "../hooks/useCart";
 import Cookies from "js-cookie";
 import { cacheExchange, useMutation, UseQueryState } from "urql";
 import {
@@ -64,26 +63,12 @@ const SingleProductPage = ({ productData }: Props) => {
         }
       );
     }
-
-    // cacheExchange({
-    //   updates: {
-    //     Mutation: {
-    //       addProduct(_result, args, cache, _info) {
-    //         cache.invalidate({
-    //           __typename: 'Cart',
-    //           id: args.cartId,
-    //         });
-    //       },
-    //     },
-    //   },
-    // });
-
     setErrorMessage(false);
   };
 
   return (
     <>
-      <Navbar itemsQuantity={cartContext?.totalQuantity} />
+      <Navbar itemsQuantity={cartContext.totalQuantity} />
       <div className={styles.container}>
         {product && variants && availableQuantity && (
           <ProductCard

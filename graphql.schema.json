@@ -31304,7 +31304,10 @@
         "name": "accessRestricted",
         "description": "Marks an element of a GraphQL schema as having restricted access.",
         "isRepeatable": false,
-        "locations": ["FIELD_DEFINITION", "OBJECT"],
+        "locations": [
+          "FIELD_DEFINITION",
+          "OBJECT"
+        ],
         "args": [
           {
             "name": "reason",
@@ -31349,7 +31352,10 @@
         "name": "inContext",
         "description": "Contextualizes data based on the additional information provided by the directive. For example, you can use the `@inContext(country: CA)` directive to [query a product's price](https://shopify.dev/custom-storefronts/internationalization/international-pricing) in a storefront within the context of Canada.",
         "isRepeatable": false,
-        "locations": ["MUTATION", "QUERY"],
+        "locations": [
+          "MUTATION",
+          "QUERY"
+        ],
         "args": [
           {
             "name": "country",
@@ -31393,7 +31399,11 @@
         "name": "include",
         "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
         "isRepeatable": false,
-        "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
+        "locations": [
+          "FIELD",
+          "FRAGMENT_SPREAD",
+          "INLINE_FRAGMENT"
+        ],
         "args": [
           {
             "name": "if",
@@ -31417,7 +31427,11 @@
         "name": "skip",
         "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
         "isRepeatable": false,
-        "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
+        "locations": [
+          "FIELD",
+          "FRAGMENT_SPREAD",
+          "INLINE_FRAGMENT"
+        ],
         "args": [
           {
             "name": "if",

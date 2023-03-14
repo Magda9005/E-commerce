@@ -22,6 +22,9 @@ import { fetchOptions } from "../../helperFunctionsAndConstants/fetchOptions";
 import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import TotalCostTableRow from "../../components/TotalCostTableRow";
+import CircularProgress from '@mui/material/CircularProgress';
+import { Stack } from "@mui/material";
+
 
 const Cart = () => {
   const context = useCart();
@@ -43,14 +46,14 @@ const Cart = () => {
     setError(false);
   };
 
-  const debounced = useDebouncedCallback((cartId, lines) => {
+  const debouncedLineUpdate = useDebouncedCallback((cartId, lines) => {
     updateLine({ cartId, lines }).then((result) => {
       if (result.error) {
         setError(true);
       }
     });
     setError(false);
-  }, 200);
+  }, 100);
 
   const checkout = () => {
     const lineItems = context.productsList.map((product) => ({
@@ -66,7 +69,9 @@ const Cart = () => {
   return (
     <>
       <Navbar itemsQuantity={context.totalQuantity} />
-      {context.productsList.length === 0 && <EmptyCartInfo />}
+      {context.isLoading && <Stack alignItems="center"> 
+      <CircularProgress color="inherit" /></Stack>}
+      {!context.isLoading && context.productsList.length === 0 && <EmptyCartInfo />}
       {context.error && (
         <ErrorMessage errorMessage={"Sorry could not retrieve data"} />
       )}
@@ -94,7 +99,7 @@ const Cart = () => {
                         removeItem(product.node.id);
                       }}
                       onValueChange={(value) =>
-                        debounced(cartId, [
+                        debouncedLineUpdate(cartId, [
                           { id: product.node.id, quantity: value },
                         ])
                       }
@@ -130,3 +135,4 @@ const Cart = () => {
 };
 
 export default withUrqlClient((ssr) => ({ ...fetchOptions }))(Cart);
+

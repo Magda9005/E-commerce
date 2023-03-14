@@ -12,13 +12,12 @@
   }
 }
 
-.cardMedia{
-  height:350px;
+.cardMedia {
+  height: 350px;
 
-  @include lg{
-    height:450px;
+  @include lg {
+    height: 450px;
   }
-
 }
 
 .price {
