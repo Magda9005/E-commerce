@@ -69,9 +69,9 @@ const Cart = () => {
   return (
     <>
       <Navbar itemsQuantity={context.totalQuantity} />
-      {context.isLoading && <Stack alignItems="center"> 
+      {(context.isLoading && context.cartId=="") && <Stack alignItems="center"> 
       <CircularProgress color="inherit" /></Stack>}
-      {!context.isLoading && context.productsList.length === 0 && <EmptyCartInfo />}
+      {(!context.isLoading && context.productsList.length === 0) && <EmptyCartInfo />}
       {context.error && (
         <ErrorMessage errorMessage={"Sorry could not retrieve data"} />
       )}

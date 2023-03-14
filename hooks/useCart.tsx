@@ -5,6 +5,7 @@ import { getCart } from "../queries/queries";
 
 const useCart = () => {
   const cartId = Cookies.get("cartId") as string;
+  
   const [result] = useQuery({
     query: getCart,
     variables: { cartId },
@@ -30,7 +31,7 @@ const useCart = () => {
         cartId: "",
         productsList: [],
         totalCostAndCurrency: [],
-        isLoading:true
+        isLoading:fetching
       };
   }, [data, fetching, error]);
 

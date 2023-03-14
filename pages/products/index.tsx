@@ -16,7 +16,6 @@ import {
 import { fetchOptions } from "../../helperFunctionsAndConstants/fetchOptions";
 import {
   getFirst3productsQuery,
-  getNextProducts,
   query,
 } from "../../queries/queries";
 import { GetStaticProps } from "next";
