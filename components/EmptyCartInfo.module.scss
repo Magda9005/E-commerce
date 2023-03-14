@@ -1,0 +1,9 @@
+@import '../breakpoints.scss';
+
+.container{
+ width:80%;
+
+ @include md{
+    width:40%;
+ }
+}

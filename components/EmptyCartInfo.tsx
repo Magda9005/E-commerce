@@ -3,7 +3,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { Link } from "@mui/material";
-import styles from "./ProductCard.module.scss";
+import styles from "./EmptyCartInfo.module.scss";
 import Button from "@mui/material/Button";
 
 const EmptyCartInfo = () => {
