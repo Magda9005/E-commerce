@@ -47,10 +47,7 @@ const CartLine = ({
         500
     );
 
-
-
     return (
-        <TableBody>
             <TableRow key={title}>
                 <TableCell component="th" scope="row">
                     <Link href={`/products/${handle}`}>
@@ -88,7 +85,6 @@ const CartLine = ({
                     </button>
                 </TableCell>
             </TableRow>
-        </TableBody>
     );
 };
 

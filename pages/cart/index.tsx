@@ -22,7 +22,7 @@ import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import TotalCostTableRow from "../../components/TotalCostTableRow";
 import CircularProgress from '@mui/material/CircularProgress';
-import { Stack } from "@mui/material";
+import { Stack, TableBody } from "@mui/material";
 
 
 const Cart = () => {
@@ -76,11 +76,12 @@ const Cart = () => {
           )}
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             {context.productsList.length > 0 && <TableHeadCart />}
+            <TableBody>
             {context.productsList.map((product) => {
               if (product.node.merchandise.quantityAvailable) {
                 return (
-                  <>
                     <CartLine
+                      key={product.node.id}
                       title={product.node.merchandise.product.title}
                       variant={product.node.merchandise.title}
                       availableQuantity={product.node.merchandise.quantityAvailable}
@@ -110,10 +111,10 @@ const Cart = () => {
                       handle={product.node.merchandise.product.handle}
                       imgUrl={product.node.merchandise.product.images.edges[0].node.url}
                     />
-                  </>
                 );
               }
             })}
+            </TableBody>
           </Table>
         </TableContainer>
         {context.productsList.length > 0 && (
