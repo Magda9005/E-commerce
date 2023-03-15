@@ -2,7 +2,6 @@ import { useState } from "react";
 import Navbar from "../../components/Navbar";
 import EmptyCartInfo from "../../components/EmptyCartInfo";
 import { useMutation } from "urql";
-import { useDebouncedCallback } from "use-debounce";
 import { formatPrice } from "../../helperFunctionsAndConstants/helperFunctions";
 import * as React from "react";
 import Table from "@mui/material/Table";
@@ -46,15 +45,6 @@ const Cart = () => {
     setError(false);
   };
 
-  const debouncedLineUpdate = useDebouncedCallback((cartId, lines) => {
-    updateLine({ cartId, lines }).then((result) => {
-      if (result.error) {
-        setError(true);
-      }
-    });
-    setError(false);
-  }, 100);
-
   const checkout = () => {
     const lineItems = context.productsList.map((product) => ({
       variantId: product.node.merchandise.id,
@@ -69,8 +59,8 @@ const Cart = () => {
   return (
     <>
       <Navbar itemsQuantity={context.totalQuantity} />
-      {(context.isLoading && context.cartId=="") && <Stack alignItems="center"> 
-      <CircularProgress color="inherit" /></Stack>}
+      {(context.isLoading && context.cartId == "") && <Stack alignItems="center">
+        <CircularProgress color="inherit" /></Stack>}
       {(!context.isLoading && context.productsList.length === 0) && <EmptyCartInfo />}
       {context.error && (
         <ErrorMessage errorMessage={"Sorry could not retrieve data"} />
@@ -98,10 +88,16 @@ const Cart = () => {
                       onClick={() => {
                         removeItem(product.node.id);
                       }}
-                      onValueChange={(value) =>
-                        debouncedLineUpdate(cartId, [
-                          { id: product.node.id, quantity: value },
-                        ])
+                      onValueChange={(quantity) => {
+                        const lines = [{ id: product.node.id, quantity: quantity }]
+                        updateLine({ cartId, lines })
+                          .then((result) => {
+                            if (result.error) {
+                              setError(true);
+                            }
+                          });
+                        setError(false);
+                      }
                       }
                       pricePerUnit={formatPrice(
                         product.node.cost.totalAmount.currencyCode,

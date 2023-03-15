@@ -32,6 +32,7 @@ const NumberInput = ({ availableQuantity, value, onValueChange }: Props) => {
           max: { availableQuantity },
           step: 1,
           inputMode: "numeric",
+          readOnly:true,
           style: { textAlign: "center", width: "2em", height: "0.7em" },
         },
         startAdornment: (

@@ -72,7 +72,7 @@ const SingleProductPage = ({ productData }: Props) => {
       <div className={styles.container}>
         {product && variants && availableQuantity && (
           <ProductCard
-            img={product?.images.edges[0].node.url}
+            img={product.images.edges[0].node.url}
             productName={product.title}
             description={product.description}
             price={price}
